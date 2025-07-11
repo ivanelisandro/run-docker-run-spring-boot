@@ -1,0 +1,67 @@
+<div class="step-text">
+<h5 id="description">Description</h5><p>Docker is an essential tool in modern software development. It enables developers to create portable, scalable, and efficient applications. In this project, you will containerize a simple a Spring Boot web application. This app greets users with a personalized message and displays fun facts about Kotlin/Java, Docker, and Spring Boot when a button is clicked. You can choose the <a href="https://github.com/the-nulldev/hyper-web-app-Kotlin/archive/refs/heads/main.zip" rel="noopener noreferrer nofollow" target="_blank">Kotlin</a> or <a href="https://github.com/the-nulldev/hyper-web-app-Java/archive/refs/heads/main.zip" rel="noopener noreferrer nofollow" target="_blank">Java</a> version. Regardles of the version you choose, the process of containerizing a Spring Boot app is the same. The applications have the following structure for typical Spring Boot web applications:</p><details><summary>Kotlin</summary><div><pre><code class="language-shell">hyper-web-app-Kotlin-main/
+├── src/
+│   └── main/
+│   │   └── kotlin/
+│   │       └── com/
+│   │           └── example/
+│   │               └── hyperwebapp/
+│   │                   ├── HyperWebAppApplication.kt
+│   │── test/
+│       └── kotlin/
+│           └── com/
+│               └── example/
+│                   └── hyperwebapp/
+│                       ├── HyperWebAppApplicationTests.kt
+├── resources/
+│   ├── templates/
+│   │   └── index.html
+│   ├── static/
+│   │   ├── styles.css
+├── build.gradle
+├── settings.gradle
+├── gradlew
+├── gradlew.bat
+└── README.md</code></pre></div></details><details><summary>Java</summary><div><pre><code class="language-shell">hyper-web-app-Java-main/
+├── src/
+│   ├── main/
+│   │   └── java/
+│   │       └── com/
+│   │           └── example/
+│   │               └── hyperwebapp/
+│   │                   ├── HyperWebAppApplication.java
+│   ├── test/
+│   │   └── java/
+│   │       └── com/
+│   │           └── example/
+│   │               └── hyperwebapp/
+│   │                   ├── HyperWebAppApplicationTests.java
+├── resources/
+│   ├── templates/
+│   │   └── index.html
+│   ├── static/
+│   │   └── styles.css
+├── build.gradle
+├── settings.gradle
+├── gradlew
+├── gradlew.bat
+└── README.md</code></pre></div></details><p>In this stage, you will lay the foundation for future stages. You'll create a <code class="language-shell">Dockerfile</code> and <code class="language-shell">.dockerignore</code> file, and pull the necessary base images for JVM-based applications. The <code class="language-shell">Dockerfile</code> is a key component in Docker workflows, defining the steps required to build and package an application into a container. The <code class="language-shell">.dockerignore</code> file is equally important, as it helps optimize your build process by excluding unnecessary files and directories from the Docker build context. You can add entries such as:</p><pre><code class="language-shell"># Gradle build files and directories
+.gradle
+build/
+
+# IDE-specific files
+.idea/
+*.iml
+
+# Operating system-specific files
+.DS_Store
+Thumbs.db
+
+# Logs and temporary files
+*.log
+tmp/
+
+# The Dockerfile and .dockerignore themselves
+Dockerfile
+.dockerignore</code></pre><p>By completing this stage, you will learn how to set up a <code class="language-shell">Dockerfile</code>, configure a <code class="language-shell">.dockerignore</code> file, and pull base images.</p><div class="alert alert-primary"><p>While the <code class="language-shell">eclipse-temurin</code> images are recommended, you can use other JVM-based images such as <code class="language-shell">amazoncorretto</code></p></div><h5 id="objectives">Objectives</h5><ol><li><p>Download and extract the project files:</p><ul><li><p>Download and extract your preferred Spring Boot project into a separate folder to avoid conflicts with the project files.</p></li><li><p>The project folder contains the necessary application files for a simple <a href="https://github.com/the-nulldev/hyper-web-app-Kotlin/archive/refs/heads/main.zip" rel="noopener noreferrer nofollow" target="_blank">Kotlin</a> or <a href="https://github.com/the-nulldev/hyper-web-app-Java/archive/refs/heads/main.zip" rel="noopener noreferrer nofollow" target="_blank">Java</a>-based Spring Boot application.</p></li></ul></li><li><p>Create the Dockerfile:</p><ul><li><p>In the root directory of the extracted application, create a file named <code class="language-shell">Dockerfile</code> (no extension).</p></li><li><p>Add two instructions to the <code class="language-shell">Dockerfile</code> that specify the base images required for building and packaging the application:</p><ul><li><p>A <code class="language-shell">build</code> stage that uses a JVM-based image with the JDK to compile the application, such as <code class="language-shell">eclipse-temurin:21-jdk</code>.</p></li><li><p>A <code class="language-shell">run</code> stage that uses a JVM-based image with the JRE to run the application, such as <code class="language-shell">eclipse-temurin:21-jre</code>.</p></li><li><p>You can use any JVM-based base image such as <code class="language-shell">eclipse-temurin</code> or <code class="language-shell">amazoncorretto</code>.</p></li></ul></li></ul></li><li><p>Create the .dockerignore file:</p><ul><li><p>In the root directory of the project, create a file named <code class="language-shell">.dockerignore</code> (no extension).</p></li><li><p>Add files to be excluded from the Docker build context.</p></li></ul></li><li><p>Pull the images:</p><ul><li><p>Use the appropriate command to pull the base images from Dockerhub.</p></li><li><p>Verify that the images were downloaded and are available locally.</p></li></ul></li><li><p>Provide the full path to the <code class="language-shell">Dockerfile</code> in the <code class="language-shell">Main.kt</code> file.</p></li></ol><p>By completing this stage, you will have a functional <code class="language-shell">Dockerfile</code> and the necessary base images available locally. This serves as the foundation for building and running the Spring Boot application in the next stages.</p><div class="alert alert-primary"><p>For this project, Docker needs to be installed on your system. You can install <a href="https://docs.docker.com/desktop/" rel="noopener noreferrer nofollow" target="_blank">Docker Desktop</a>, which is an easy-to-install application for your Mac, Windows, or Linux environment that enables you to build and share containerized applications and microservices.</p></div><div class="alert alert-warning"><p>On some Linux distributions, you may need to add users to the docker group to pass the tests. You can do this by running the following command: <code class="language-shell">sudo usermod -aG docker $USER</code></p></div>
+</div>

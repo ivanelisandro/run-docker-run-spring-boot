@@ -1,0 +1,8 @@
+type: framework
+content:
+  - Base
+  - Instructions
+  - A new image
+  - Run Docker
+  - Home cleaning
+current_task: 0

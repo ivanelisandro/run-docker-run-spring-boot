@@ -1,0 +1,112 @@
+hyperskill_project:
+  id: 507
+  ide_files: https://hyperskill.org/api/projects/507/additional-files/additional_files.json
+  is_template_based: false
+  use_ide: true
+update_date: "Thu, 01 Jan 1970 00:00:00 UTC"
+stages:
+  - id: 2984
+    step: 51848
+    is_completed: false
+  - id: 2985
+    step: 51849
+    is_completed: false
+  - id: 2986
+    step: 51850
+    is_completed: false
+  - id: 2987
+    step: 51851
+    is_completed: false
+  - id: 2988
+    step: 51852
+    is_completed: false
+topics:
+  0:
+    - title: "Write, compile, and run"
+      theory_id: 3739
+    - title: "Basic terms: JVM, JRE, JDK"
+      theory_id: 3499
+    - title: Operating systems
+      theory_id: 9704
+    - title: Command line overview
+      theory_id: 8977
+    - title: Parameters and options
+      theory_id: 9746
+    - title: Units of information
+      theory_id: 6865
+    - title: World Wide Web
+      theory_id: 6633
+    - title: First program in bash
+      theory_id: 12135
+    - title: Functions and arguments
+      theory_id: 12188
+    - title: Explore folders and files
+      theory_id: 12495
+    - title: Variables and aliases
+      theory_id: 16670
+    - title: IP
+      theory_id: 13662
+    - title: SSH
+      theory_id: 19129
+    - title: "Introduction to docker, installation"
+      theory_id: 15850
+    - title: Run the "hello-world" docker container
+      theory_id: 16020
+    - title: Basic operations with a container
+      theory_id: 17573
+    - title: Docker build and docker tag
+      theory_id: 23950
+    - title: "Dockerfile (FROM, LABEL, CMD, ENTRYPOINT)"
+      theory_id: 24322
+    - title: "Dockerfile (RUN, SHELL)"
+      theory_id: 25768
+    - title: Best practices for writing Dockerfiles
+      theory_id: 26511
+    - title: Multiple stage building
+      theory_id: 32112
+    - title: Working with environment variables
+      theory_id: 21828
+    - title: Build tools
+      theory_id: 4284
+    - title: JAR files
+      theory_id: 4311
+    - title: "Gradle: overview"
+      theory_id: 5075
+    - title: Basic project with Gradle
+      theory_id: 5077
+    - title: Building apps using Gradle
+      theory_id: 7917
+    - title: YAML
+      theory_id: 12722
+    - title: Files
+      theory_id: 13025
+    - title: Introduction to Linux
+      theory_id: 9526
+    - title: Containers
+      theory_id: 15082
+    - title: Environment variables
+      theory_id: 21817
+  1:
+    - title: Working with file modes and permissions
+      theory_id: 13961
+    - title: Archiving and extracting data
+      theory_id: 14190
+    - title: "Dockerfile (COPY, ADD, ENV, ARG)"
+      theory_id: 24662
+    - title: "Dockerfile (USER, WORKDIR, EXPOSE)"
+      theory_id: 25310
+    - title: File types
+      theory_id: 13017
+    - title: File modes and permissions
+      theory_id: 13953
+  2:
+    - title: Libraries
+      theory_id: 8504
+    - title: Semantic versioning
+      theory_id: 19244
+    - title: Computer Memory
+      theory_id: 18003
+    - title: Components of computer memory
+      theory_id: 18049
+    - title: Memory management
+      theory_id: 18243
