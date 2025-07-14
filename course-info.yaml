@@ -13,8 +13,5 @@ summary: "<p>Docker is a platform for developing, shipping, and running applicat
 programming_language: Kotlin
 content:
   - Run Docker Run (Spring Boot)
-additional_files:
-  - name: build.gradle
-  - name: settings.gradle
 mode: Study
 yaml_version: 4
