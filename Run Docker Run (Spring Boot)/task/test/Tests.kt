@@ -8,15 +8,63 @@ import java.io.InputStreamReader
 
 class DockerTest : StageTest<String>() {
 
-    private val requiredInstructions = listOf("FROM")
+    private val requiredInstructions = listOf("FROM", "WORKDIR", "EXPOSE", "RUN", "ENTRYPOINT")
     private val allowedBaseImages = listOf("eclipse-temurin", "amazoncorretto")
 
     /**
-     * Test 1: Check if valid JVM-based base images are used
+     * Test 1: Check if the Dockerfile exists and contains valid content
      */
     @DynamicTest
-    fun test1_checkBaseImages(): CheckResult {
-        // Step 1: Get the Dockerfile path
+    fun test1_checkDockerfileContent(): CheckResult {
+        // Step 1: Get the Dockerfile path from the student's program
+        val program = TestedProgram()
+        val dockerfilePath = program.start().trim()
+
+        // Check if the Dockerfile path is valid
+        val dockerfile = File(dockerfilePath)
+        if (!dockerfile.exists() || !dockerfile.isFile) {
+            return CheckResult.wrong("The provided Dockerfile path '$dockerfilePath' is invalid or the file does not exist.")
+        }
+
+        // Read the Dockerfile content
+        val dockerfileContent = dockerfile.readText().lowercase()
+        val dockerfileLines = dockerfileContent.lines().filter { it.isNotBlank() }
+
+        for (instruction in requiredInstructions) {
+            if (!dockerfileLines.any { it.startsWith(instruction.toLowerCase()) }) {
+                return when (instruction) {
+                    "WORKDIR" -> CheckResult.wrong("The Dockerfile does not have an instruction to set the working directory!")
+                    "RUN" -> CheckResult.wrong("The Dockerfile should include RUN commands for to install dependencies, set permissions, and build the app using Gradle!")
+                    "EXPOSE" -> CheckResult.wrong("The Dockerfile should expose port 8080 for the Spring Boot application!")
+                    "ENTRYPOINT" -> CheckResult.wrong("The Dockerfile should include an entrypoint to run the Spring Boot application!")
+                    else -> CheckResult.wrong("The Dockerfile is missing the required instruction: $instruction")
+                }
+            }
+        }
+
+        // Check if either COPY or ADD is present in the Dockerfile
+        if (!dockerfileContent.contains("copy") && !dockerfileContent.contains("add")) {
+            return CheckResult.wrong("The Dockerfile must include instructions to transfer files into the image!")
+        }
+
+        val copyCount = dockerfileContent.lines().count { it.trim().startsWith("copy") || it.trim().startsWith("add") }
+        if (copyCount < 3) {
+            return CheckResult.wrong("The Dockerfile should include at least 3 instructions to transfer files into the image since the files are copied to different target directories!")
+        }
+
+        val runCount = dockerfileContent.lines().count { it.trim().startsWith("run") }
+        if (runCount < 2) {
+            return CheckResult.wrong("The Dockerfile should include at least 2 RUN commands to set permissions and build the app using Gradle!")
+        }
+        return CheckResult.correct()
+    }
+
+    /**
+     * Test 2: Check if valid JVM-based base images are used
+     */
+    @DynamicTest
+    fun test2_checkBaseImages(): CheckResult {
+        // Step 1: Get the Dockerfile path from the student's program
         val program = TestedProgram()
         val dockerfilePath = program.start().trim()
 
@@ -42,16 +90,16 @@ class DockerTest : StageTest<String>() {
         } else {
             CheckResult.wrong(
                 "The Dockerfile uses invalid base image(s): ${invalidImages.joinToString(", ")}. " +
-                        "Please use a valid JVM-based base image such as `eclipse-temurin` or `amazoncorretto`."
+                        "Please use amy of these base images: `eclipse-temurin` or `amazoncorretto`."
             )
         }
     }
 
     /**
-     * Test 2: Check if the Dockerfile uses multi-stage builds
+     * Test 3: Check if the Dockerfile uses multi-stage builds
      */
     @DynamicTest
-    fun test2_checkMultiStageBuild(): CheckResult {
+    fun test3_checkMultiStageBuild(): CheckResult {
         // Step 1: Get the Dockerfile path from the student's program
         val program = TestedProgram()
         val dockerfilePath = program.start().trim()
@@ -60,12 +108,6 @@ class DockerTest : StageTest<String>() {
         val dockerfile = File(dockerfilePath)
         if (!dockerfile.exists() || !dockerfile.isFile) {
             return CheckResult.wrong("The provided Dockerfile path '$dockerfilePath' is invalid or the file does not exist.")
-        }
-
-        // check if .dockerignore file exists
-        val dockerignore = File(dockerfile.parent, ".dockerignore")
-        if (!dockerignore.exists() || !dockerignore.isFile) {
-            return CheckResult.wrong("The .dockerignore file is missing in the project directory.")
         }
 
         // Read the Dockerfile content
@@ -73,23 +115,22 @@ class DockerTest : StageTest<String>() {
 
         // Count the number of `FROM` instructions
         val fromCount = dockerfileContent.lines().count { it.trim().startsWith("from ") }
-        return if (fromCount >= 2 && dockerfileContent.contains(" as ")) {
+
+        // Ensure there are at least two `FROM` instructions for multi-stage builds
+        return if (fromCount >= 2) {
             CheckResult.correct()
         } else {
             CheckResult.wrong(
-                "The Dockerfile should use multi-stage builds with at least two `FROM` instructions. " +
-                        "Please ensure that the Dockerfile has a build stage and a run stage and uses the appropriate keywords to name them."
+                "The Dockerfile should use multi-stage builds!"
             )
         }
-
     }
 
     /**
-     * Test 3: Check if the JVM images used in the Dockerfile exist in the local system by listing images
+     * Test 4: Verify the exposed port in the Dockerfile
      */
-
     @DynamicTest
-    fun test3_checkJVMImagesExist(): CheckResult {
+    fun test4_checkExposedPort(): CheckResult {
         // Step 1: Get the Dockerfile path from the student's program
         val program = TestedProgram()
         val dockerfilePath = program.start().trim()
@@ -103,31 +144,14 @@ class DockerTest : StageTest<String>() {
         // Read the Dockerfile content
         val dockerfileContent = dockerfile.readText().lowercase()
 
-        // Extract base images from the Dockerfile
-        val baseImages = extractBaseImages(dockerfileContent)
-
-        // Check if the JVM images used in the Dockerfile exist in the local system
-        val missingImages = baseImages.filterNot { baseImage ->
-            val process = ProcessBuilder("docker", "images", "--format", "{{.Repository}}:{{.Tag}}")
-                .redirectErrorStream(true)
-                .start()
-
-            val reader = BufferedReader(InputStreamReader(process.inputStream))
-            val images = reader.readLines()
-
-            images.any { it.startsWith(baseImage) }
-        }
-
-        return if (missingImages.isEmpty()) {
+        // Check if port 8080 is exposed
+        val isPortExposed = dockerfileContent.lines().any { it.trim() == "expose 8080" }
+        return if (isPortExposed) {
             CheckResult.correct()
         } else {
-            CheckResult.wrong(
-                "The following base image(s) are missing in the local system: ${missingImages.joinToString(", ")}. " +
-                        "Please ensure that the required base images are available in the local system."
-            )
+            CheckResult.wrong("The Dockerfile should expose port 8080 for the Spring Boot application!")
         }
     }
-
 
     /**
      * Extracts the base images (e.g., `FROM <base-image>`) from the Dockerfile content.
